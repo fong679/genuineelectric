@@ -165,9 +165,74 @@ a:focus-visible, button:focus-visible, summary:focus-visible{ outline:3px solid 
 .label-l{ font-family:'Roboto Mono',monospace; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:500; }
 
 /* ---------- Reveal ---------- */
-.reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s cubic-bezier(.2,.6,.3,1), transform .6s cubic-bezier(.2,.6,.3,1); }
+.reveal{
+  opacity:0; transform:translateY(22px) scale(.985);
+  transition:opacity .6s cubic-bezier(.2,.6,.3,1), transform .6s cubic-bezier(.2,.6,.3,1);
+  transition-delay:var(--d, 0ms);
+}
 .reveal.in-view{ opacity:1; transform:none; }
-@media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; } }
+@media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; transition-delay:0ms !important; } }
+
+/* ---------- Ripple (Material state response) ---------- */
+.ripple-wrap{ position:relative; overflow:hidden; }
+.ripple{
+  position:absolute; border-radius:50%; background:currentColor; opacity:0.28;
+  transform:scale(0); animation:ripple-anim .55s ease-out forwards;
+  pointer-events:none;
+}
+@keyframes ripple-anim{ to{ transform:scale(2.6); opacity:0; } }
+@media (prefers-reduced-motion: reduce){ .ripple{ animation:none; display:none; } }
+
+/* ---------- Ambient float / drift ---------- */
+@keyframes drift-a{
+  0%,100%{ transform:translate(0,0) scale(1); }
+  50%{ transform:translate(-18px,14px) scale(1.04); }
+}
+@keyframes drift-b{
+  0%,100%{ transform:translate(0,0) scale(1); }
+  50%{ transform:translate(16px,-12px) scale(1.05); }
+}
+.blob-a{ animation:drift-a 14s ease-in-out infinite; transform-origin:center; }
+.blob-b{ animation:drift-b 17s ease-in-out infinite; transform-origin:center; }
+@media (prefers-reduced-motion: reduce){ .blob-a, .blob-b{ animation:none; } }
+
+@keyframes mast-bob{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-4px); }
+}
+@keyframes wheel-spin{ to{ transform:rotate(360deg); } }
+@keyframes panel-blink{
+  0%,100%{ opacity:1; }
+  50%{ opacity:0.35; }
+}
+@keyframes fork-lift{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-6px); }
+}
+.anim-mast{ animation:mast-bob 3.2s ease-in-out infinite; transform-origin:center; }
+.anim-wheel{ animation:wheel-spin 4s linear infinite; transform-origin:center; }
+.anim-blink-1{ animation:panel-blink 2.4s ease-in-out infinite; }
+.anim-blink-2{ animation:panel-blink 2.4s ease-in-out infinite .5s; }
+.anim-blink-3{ animation:panel-blink 2.4s ease-in-out infinite 1s; }
+.anim-fork{ animation:fork-lift 3.2s ease-in-out infinite; transform-origin:center; }
+@media (prefers-reduced-motion: reduce){
+  .anim-mast, .anim-wheel, .anim-blink-1, .anim-blink-2, .anim-blink-3, .anim-fork{ animation:none; }
+}
+
+@keyframes fab-pulse{
+  0%,100%{ box-shadow:0 0 0 0 rgba(74,122,112,0.35), var(--el3); }
+  50%{ box-shadow:0 0 0 10px rgba(74,122,112,0), var(--el3); }
+}
+.fab.wa{ animation:fab-pulse 2.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){ .fab.wa{ animation:none; } }
+
+@keyframes count-pop{
+  0%{ transform:scale(1); }
+  30%{ transform:scale(1.12); }
+  100%{ transform:scale(1); }
+}
+.stat-num.counted{ animation:count-pop .4s ease-out; }
+@media (prefers-reduced-motion: reduce){ .stat-num.counted{ animation:none; } }
 
 /* ---------- State layer helper ---------- */
 .state-layer{ position:relative; overflow:hidden; isolation:isolate; }
@@ -337,7 +402,9 @@ section{ padding:88px 24px; }
   width:44px; height:44px; border-radius:var(--shape-md);
   background:var(--md-primary-container); color:var(--md-on-primary-container);
   display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1), border-radius .3s ease;
 }
+.step:hover .step-icon{ transform:scale(1.08) rotate(-4deg); border-radius:var(--shape-lg); }
 .step h3{ font-family:'Roboto',sans-serif; font-weight:600; font-size:1.04rem; margin:0 0 8px; color:var(--md-on-surface); }
 .step p{ margin:0; color:var(--md-on-surface-variant); font-size:0.9rem; line-height:1.6; }
 .step-tag{ font-family:'Roboto Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--md-outline); margin-bottom:4px; }
@@ -357,7 +424,9 @@ section{ padding:88px 24px; }
   width:46px; height:46px; border-radius:var(--shape-md);
   background:var(--md-tertiary-container); color:var(--md-on-tertiary-container);
   display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1), border-radius .3s ease;
 }
+.svc-card:hover .svc-icon{ transform:scale(1.08) rotate(-4deg); border-radius:var(--shape-lg); }
 .svc-card:nth-child(3n+2) .svc-icon{ background:var(--md-primary-container); color:var(--md-on-primary-container); }
 .svc-card:nth-child(3n+3) .svc-icon{ background:var(--md-secondary-container); color:var(--md-on-secondary-container); }
 .svc-code{ font-family:'Roboto Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--md-outline); display:block; margin-bottom:6px; }
@@ -551,8 +620,8 @@ footer{ background:var(--md-surface-container); color:var(--md-on-surface-varian
   <!-- HERO -->
   <section class="hero" style="padding:0;">
     <svg class="hero-blobs" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M980 60c110 40 170 150 150 260s-130 190-250 220-250-10-320-90-90-190-40-280 250-160 460-110z" fill="var(--md-primary-container)" opacity="0.5"/>
-      <path d="M120 420c90-60 210-50 270 30s50 200-30 260-210 40-270-30 -60-200 30-260z" fill="var(--md-tertiary-container)" opacity="0.35"/>
+      <path class="blob-a" d="M980 60c110 40 170 150 150 260s-130 190-250 220-250-10-320-90-90-190-40-280 250-160 460-110z" fill="var(--md-primary-container)" opacity="0.5"/>
+      <path class="blob-b" d="M120 420c90-60 210-50 270 30s50 200-30 260-210 40-270-30 -60-200 30-260z" fill="var(--md-tertiary-container)" opacity="0.35"/>
     </svg>
     <div class="hero-inner">
       <span class="chip reveal in-view"><span class="material-symbols-outlined" style="font-size:18px; font-variation-settings:'FILL' 1;">star</span>5.0 rated on Google &middot; Kasavu, Nausori</span>
@@ -575,20 +644,20 @@ footer{ background:var(--md-surface-container); color:var(--md-on-surface-varian
       </div>
 
       <div class="stat-strip reveal">
-        <div class="stat-cell">
-          <div class="stat-num"><span class="material-symbols-outlined">star</span>5.0</div>
+        <div class="stat-cell reveal">
+          <div class="stat-num" data-value="5.0"><span class="material-symbols-outlined">star</span>5.0</div>
           <div class="stat-label">Google rating</div>
         </div>
-        <div class="stat-cell">
-          <div class="stat-num">8</div>
+        <div class="stat-cell reveal">
+          <div class="stat-num" data-value="8">8</div>
           <div class="stat-label">Service lines covered</div>
         </div>
-        <div class="stat-cell">
-          <div class="stat-num">~14 min</div>
+        <div class="stat-cell reveal">
+          <div class="stat-num" data-value="~14 min">~14 min</div>
           <div class="stat-label">From Nausori town</div>
         </div>
-        <div class="stat-cell">
-          <div class="stat-num">1</div>
+        <div class="stat-cell reveal">
+          <div class="stat-num" data-value="1">1</div>
           <div class="stat-label">Call for every repair</div>
         </div>
       </div>
@@ -634,25 +703,40 @@ footer{ background:var(--md-surface-container); color:var(--md-on-surface-varian
       <div class="diagram reveal">
         <div class="diagram-label">What we work on</div>
         <svg viewBox="0 0 320 260" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration of a forklift lifting a pallet, beside an electrical control panel">
-          <line x1="0" y1="210" x2="320" y2="210" stroke="var(--md-outline-variant)" stroke-width="1"/>
-          <rect x="40" y="150" width="90" height="50" rx="10" fill="var(--md-primary)"/>
-          <rect x="48" y="120" width="8" height="34" rx="3" fill="var(--md-on-surface)"/>
-          <rect x="118" y="120" width="8" height="34" rx="3" fill="var(--md-on-surface)"/>
-          <rect x="48" y="90" width="78" height="8" rx="4" fill="var(--md-on-surface)"/>
-          <circle cx="58" cy="205" r="12" fill="var(--md-surface-lowest)" stroke="var(--md-on-surface)" stroke-width="2"/>
-          <circle cx="112" cy="205" r="12" fill="var(--md-surface-lowest)" stroke="var(--md-on-surface)" stroke-width="2"/>
-          <rect x="126" y="150" width="34" height="4" rx="2" fill="var(--md-outline)"/>
-          <rect x="126" y="166" width="34" height="4" rx="2" fill="var(--md-outline)"/>
-          <rect x="158" y="140" width="30" height="26" rx="6" fill="var(--md-tertiary)"/>
-          <rect x="230" y="70" width="60" height="90" rx="14" fill="var(--md-surface-container)" stroke="var(--md-outline-variant)" stroke-width="1.5"/>
-          <rect x="240" y="82" width="40" height="10" rx="4" fill="var(--md-primary)"/>
-          <rect x="240" y="98" width="40" height="6" rx="3" fill="var(--md-outline-variant)"/>
-          <rect x="240" y="110" width="40" height="6" rx="3" fill="var(--md-outline-variant)"/>
-          <rect x="240" y="122" width="40" height="6" rx="3" fill="var(--md-outline-variant)"/>
-          <circle cx="250" cy="142" r="4" fill="var(--md-tertiary)"/>
-          <circle cx="264" cy="142" r="4" fill="var(--md-primary)"/>
-          <circle cx="278" cy="142" r="4" fill="var(--md-secondary)"/>
-          <line x1="0" y1="210" x2="320" y2="210" stroke="var(--md-outline)" stroke-width="2"/>
+          <!-- soft ground shadow -->
+          <ellipse cx="95" cy="221" rx="72" ry="7" fill="var(--md-outline-variant)" opacity="0.5"/>
+          <ellipse cx="260" cy="221" rx="34" ry="6" fill="var(--md-outline-variant)" opacity="0.4"/>
+          <line x1="0" y1="221" x2="320" y2="221" stroke="var(--md-outline-variant)" stroke-width="1.5"/>
+
+          <!-- forklift body -->
+          <g class="anim-fork">
+            <rect x="38" y="148" width="92" height="52" rx="16" fill="var(--md-primary)"/>
+            <rect x="46" y="160" width="34" height="24" rx="8" fill="var(--md-on-primary)" opacity="0.18"/>
+            <circle cx="58" cy="203" r="13" fill="var(--md-on-surface)"/>
+            <circle cx="58" cy="203" r="13" fill="none" class="anim-wheel" stroke="var(--md-surface-lowest)" stroke-width="2.4" stroke-dasharray="3 5"/>
+            <circle cx="112" cy="203" r="13" fill="var(--md-on-surface)"/>
+            <circle cx="112" cy="203" r="13" fill="none" class="anim-wheel" stroke="var(--md-surface-lowest)" stroke-width="2.4" stroke-dasharray="3 5"/>
+
+            <g class="anim-mast">
+              <rect x="46" y="112" width="9" height="40" rx="4" fill="var(--md-on-surface)"/>
+              <rect x="120" y="112" width="9" height="40" rx="4" fill="var(--md-on-surface)"/>
+              <rect x="46" y="108" width="83" height="9" rx="4" fill="var(--md-on-surface)"/>
+              <rect x="123" y="148" width="36" height="5" rx="2.5" fill="var(--md-outline)"/>
+              <rect x="123" y="164" width="36" height="5" rx="2.5" fill="var(--md-outline)"/>
+              <rect x="156" y="132" width="34" height="30" rx="8" fill="var(--md-tertiary)"/>
+              <rect x="162" y="138" width="22" height="6" rx="3" fill="var(--md-on-tertiary)" opacity="0.35"/>
+            </g>
+          </g>
+
+          <!-- control panel -->
+          <rect x="228" y="66" width="64" height="96" rx="18" fill="var(--md-surface-container)" stroke="var(--md-outline-variant)" stroke-width="1.5"/>
+          <rect x="239" y="79" width="42" height="12" rx="6" fill="var(--md-primary)"/>
+          <rect x="239" y="98" width="42" height="7" rx="3.5" fill="var(--md-outline-variant)"/>
+          <rect x="239" y="111" width="42" height="7" rx="3.5" fill="var(--md-outline-variant)"/>
+          <rect x="239" y="124" width="42" height="7" rx="3.5" fill="var(--md-outline-variant)"/>
+          <circle class="anim-blink-1" cx="248" cy="146" r="4.5" fill="var(--md-tertiary)"/>
+          <circle class="anim-blink-2" cx="262" cy="146" r="4.5" fill="var(--md-primary)"/>
+          <circle class="anim-blink-3" cx="276" cy="146" r="4.5" fill="var(--md-secondary)"/>
         </svg>
       </div>
     </div>
@@ -706,7 +790,15 @@ footer{ background:var(--md-surface-container); color:var(--md-on-surface-varian
       <div class="svc-grid">
 
         <div class="svc-card reveal">
-          <div class="svc-icon"><span class="material-symbols-outlined">forklift</span></div>
+          <div class="svc-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M3 18h2V9a1 1 0 0 1 1-1h2v10h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 18V8l3 3h3v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="8" cy="19.5" r="1.6" fill="currentColor"/>
+              <circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/>
+              <path d="M3 12h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
           <span class="svc-code">01 &mdash; Forklifts</span>
           <h3>General forklift service</h3>
           <p>Routine servicing and fault repair for forklifts used in warehouses, farms, and industrial yards across the region.</p>
@@ -1071,16 +1163,81 @@ footer{ background:var(--md-surface-container); color:var(--md-on-surface-varian
   });
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Stagger reveal delays within each grid/list so cards cascade in */
+  document.querySelectorAll('.svc-grid, .process-grid, .about-chips, .faq-list, .stat-strip').forEach(function(group){
+    Array.prototype.forEach.call(group.children, function(child, i){
+      if(child.classList && child.classList.contains('reveal')){
+        child.style.setProperty('--d', Math.min(i * 70, 420) + 'ms');
+      }
+    });
+  });
+
   if(!reduceMotion && 'IntersectionObserver' in window){
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target); }
+        if(e.isIntersecting){
+          e.target.classList.add('in-view');
+          io.unobserve(e.target);
+          if(e.target.classList.contains('stat-strip')){ runCounters(); }
+        }
       });
     }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
   } else {
     document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in-view'); });
+    runCounters();
   }
+
+  /* Animated stat counters — parses a leading number and counts up, keeping prefix/suffix text */
+  var countersRan = false;
+  function runCounters(){
+    if(countersRan) return;
+    countersRan = true;
+    document.querySelectorAll('.stat-num').forEach(function(el, idx){
+      var raw = el.getAttribute('data-value') || el.textContent.trim();
+      var match = raw.match(/^([^\d]*)([\d.]+)(.*)$/);
+      if(!match){ return; }
+      var prefix = match[1], target = parseFloat(match[2]), suffix = match[3];
+      var isDecimal = match[2].indexOf('.') !== -1;
+      var icon = el.querySelector('.material-symbols-outlined');
+      var iconHTML = icon ? icon.outerHTML : '';
+      if(reduceMotion){
+        el.innerHTML = iconHTML + prefix + match[2] + suffix;
+        return;
+      }
+      var start = null;
+      var duration = 900 + idx * 120;
+      function step(ts){
+        if(!start) start = ts;
+        var p = Math.min((ts - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        var val = target * eased;
+        var display = isDecimal ? val.toFixed(1) : Math.round(val);
+        el.innerHTML = iconHTML + prefix + display + suffix;
+        if(p < 1){ requestAnimationFrame(step); }
+        else{ el.classList.add('counted'); }
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  /* Material ripple on interactive controls */
+  document.querySelectorAll('.btn, .fab, .icon-btn, .theme-toggle button').forEach(function(el){
+    el.classList.add('ripple-wrap');
+    el.addEventListener('click', function(ev){
+      if(reduceMotion) return;
+      var rect = el.getBoundingClientRect();
+      var size = Math.max(rect.width, rect.height);
+      var span = document.createElement('span');
+      span.className = 'ripple';
+      span.style.width = span.style.height = size + 'px';
+      span.style.left = (ev.clientX - rect.left - size / 2) + 'px';
+      span.style.top = (ev.clientY - rect.top - size / 2) + 'px';
+      el.appendChild(span);
+      span.addEventListener('animationend', function(){ span.remove(); });
+    });
+  });
 
   var form = document.getElementById('quoteForm');
   form.addEventListener('submit', function(e){
