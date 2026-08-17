@@ -196,29 +196,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible{ outline:3px solid 
 .blob-b{ animation:drift-b 17s ease-in-out infinite; transform-origin:center; }
 @media (prefers-reduced-motion: reduce){ .blob-a, .blob-b{ animation:none; } }
 
-@keyframes mast-bob{
-  0%,100%{ transform:translateY(0); }
-  50%{ transform:translateY(-4px); }
-}
-@keyframes wheel-spin{ to{ transform:rotate(360deg); } }
-@keyframes panel-blink{
-  0%,100%{ opacity:1; }
-  50%{ opacity:0.35; }
-}
-@keyframes fork-lift{
-  0%,100%{ transform:translateY(0); }
-  50%{ transform:translateY(-6px); }
-}
-.anim-mast{ animation:mast-bob 3.2s ease-in-out infinite; transform-origin:center; }
-.anim-wheel{ animation:wheel-spin 4s linear infinite; transform-origin:center; }
-.anim-blink-1{ animation:panel-blink 2.4s ease-in-out infinite; }
-.anim-blink-2{ animation:panel-blink 2.4s ease-in-out infinite .5s; }
-.anim-blink-3{ animation:panel-blink 2.4s ease-in-out infinite 1s; }
-.anim-fork{ animation:fork-lift 3.2s ease-in-out infinite; transform-origin:center; }
-@media (prefers-reduced-motion: reduce){
-  .anim-mast, .anim-wheel, .anim-blink-1, .anim-blink-2, .anim-blink-3, .anim-fork{ animation:none; }
-}
-
 @keyframes fab-pulse{
   0%,100%{ box-shadow:0 0 0 0 rgba(74,122,112,0.35), var(--el3); }
   50%{ box-shadow:0 0 0 10px rgba(74,122,112,0), var(--el3); }
@@ -387,6 +364,90 @@ section{ padding:88px 24px; }
   border-radius:var(--shape-xl); padding:26px; box-shadow:var(--el1);
 }
 .diagram-label{ font-family:'Roboto Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--md-on-surface-variant); margin-bottom:16px; }
+
+/* ---------- Workshop status panel (replaces literal illustration) ---------- */
+.snapshot{
+  position:relative;
+  background:var(--md-surface-lowest);
+  border:1px solid var(--md-outline-variant);
+  border-radius:var(--shape-lg);
+  padding:22px;
+  overflow:hidden;
+}
+.snap-deco{
+  position:absolute;
+  border-radius:50%;
+  border:2px dashed var(--md-outline-variant);
+  opacity:0.5;
+  pointer-events:none;
+}
+.snap-deco-a{ width:120px; height:120px; top:-40px; right:-30px; animation:spin-slow 40s linear infinite; }
+.snap-deco-b{ width:70px; height:70px; bottom:10px; right:60px; opacity:0.3; animation:spin-slow 28s linear infinite reverse; }
+@keyframes spin-slow{ to{ transform:rotate(360deg); } }
+@media (prefers-reduced-motion: reduce){ .snap-deco-a, .snap-deco-b{ animation:none; } }
+
+.snapshot-top{
+  position:relative; z-index:1;
+  display:flex; align-items:center; gap:7px;
+  margin-bottom:20px;
+}
+.snap-dot{ width:9px; height:9px; border-radius:50%; }
+.snap-title{
+  font-family:'Roboto Mono',monospace; font-size:0.66rem; letter-spacing:0.1em;
+  color:var(--md-on-surface-variant); margin-left:6px;
+}
+.snap-pill{
+  margin-left:auto; display:inline-flex; align-items:center; gap:6px;
+  background:var(--md-secondary-container); color:var(--md-on-secondary-container);
+  font-family:'Roboto Mono',monospace; font-size:0.64rem; letter-spacing:0.06em; text-transform:uppercase;
+  padding:5px 10px; border-radius:var(--shape-full);
+}
+.snap-pulse{ width:6px; height:6px; border-radius:50%; background:var(--md-secondary); position:relative; }
+.snap-pulse::after{
+  content:""; position:absolute; inset:-4px; border-radius:50%; background:var(--md-secondary);
+  opacity:0.5; animation:snap-ping 1.8s ease-out infinite;
+}
+@keyframes snap-ping{ 0%{ transform:scale(0.6); opacity:0.6; } 100%{ transform:scale(2.2); opacity:0; } }
+@media (prefers-reduced-motion: reduce){ .snap-pulse::after{ animation:none; opacity:0.25; } }
+
+.snapshot-grid{
+  position:relative; z-index:1;
+  display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:18px;
+}
+.snap-tile{
+  display:flex; flex-direction:column; align-items:flex-start; gap:10px;
+  background:var(--md-surface-container); border:1px solid var(--md-outline-variant);
+  border-radius:var(--shape-md); padding:14px 12px;
+  font-family:'Roboto',sans-serif; font-size:0.74rem; font-weight:500; color:var(--md-on-surface);
+  opacity:0; transform:translateY(10px);
+  animation:snap-tile-in .5s ease-out forwards;
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.snap-tile:hover{ transform:translateY(-3px); box-shadow:var(--el1); border-color:var(--md-primary); }
+.snap-tile:nth-child(1){ animation-delay:.05s; }
+.snap-tile:nth-child(2){ animation-delay:.12s; }
+.snap-tile:nth-child(3){ animation-delay:.19s; }
+.snap-tile:nth-child(4){ animation-delay:.26s; }
+.snap-tile:nth-child(5){ animation-delay:.33s; }
+.snap-tile:nth-child(6){ animation-delay:.40s; }
+@keyframes snap-tile-in{ to{ opacity:1; transform:translateY(0); } }
+@media (prefers-reduced-motion: reduce){ .snap-tile{ animation:none; opacity:1; transform:none; } }
+
+.snap-icon{
+  width:32px; height:32px; border-radius:var(--shape-sm);
+  display:flex; align-items:center; justify-content:center;
+  background:var(--md-primary-container); color:var(--md-on-primary-container);
+}
+.snap-icon .material-symbols-outlined{ font-size:18px; }
+.snap-tile:nth-child(3n+2) .snap-icon{ background:var(--md-secondary-container); color:var(--md-on-secondary-container); }
+.snap-tile:nth-child(3n+3) .snap-icon{ background:var(--md-tertiary-container); color:var(--md-on-tertiary-container); }
+
+.snapshot-foot{
+  position:relative; z-index:1;
+  display:flex; align-items:center; gap:6px;
+  font-family:'Roboto Mono',monospace; font-size:0.7rem; color:var(--md-on-surface-variant);
+  padding-top:14px; border-top:1px solid var(--md-outline-variant);
+}
 
 /* ---------- Process ---------- */
 .process{ background:var(--md-surface-container-low, var(--md-surface-low)); }
@@ -702,42 +763,52 @@ footer{ background:var(--md-surface-container); color:var(--md-on-surface-varian
       </div>
       <div class="diagram reveal">
         <div class="diagram-label">What we work on</div>
-        <svg viewBox="0 0 320 260" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration of a forklift lifting a pallet, beside an electrical control panel">
-          <!-- soft ground shadow -->
-          <ellipse cx="95" cy="221" rx="72" ry="7" fill="var(--md-outline-variant)" opacity="0.5"/>
-          <ellipse cx="260" cy="221" rx="34" ry="6" fill="var(--md-outline-variant)" opacity="0.4"/>
-          <line x1="0" y1="221" x2="320" y2="221" stroke="var(--md-outline-variant)" stroke-width="1.5"/>
+        <div class="snapshot">
+          <div class="snap-deco snap-deco-a" aria-hidden="true"></div>
+          <div class="snap-deco snap-deco-b" aria-hidden="true"></div>
 
-          <!-- forklift body -->
-          <g class="anim-fork">
-            <rect x="38" y="148" width="92" height="52" rx="16" fill="var(--md-primary)"/>
-            <rect x="46" y="160" width="34" height="24" rx="8" fill="var(--md-on-primary)" opacity="0.18"/>
-            <circle cx="58" cy="203" r="13" fill="var(--md-on-surface)"/>
-            <circle cx="58" cy="203" r="13" fill="none" class="anim-wheel" stroke="var(--md-surface-lowest)" stroke-width="2.4" stroke-dasharray="3 5"/>
-            <circle cx="112" cy="203" r="13" fill="var(--md-on-surface)"/>
-            <circle cx="112" cy="203" r="13" fill="none" class="anim-wheel" stroke="var(--md-surface-lowest)" stroke-width="2.4" stroke-dasharray="3 5"/>
+          <div class="snapshot-top">
+            <span class="snap-dot" style="background:var(--md-tertiary);"></span>
+            <span class="snap-dot" style="background:var(--md-primary);"></span>
+            <span class="snap-dot" style="background:var(--md-secondary);"></span>
+            <span class="snap-title">WORKSHOP STATUS</span>
+            <span class="snap-pill"><span class="snap-pulse"></span>On call</span>
+          </div>
 
-            <g class="anim-mast">
-              <rect x="46" y="112" width="9" height="40" rx="4" fill="var(--md-on-surface)"/>
-              <rect x="120" y="112" width="9" height="40" rx="4" fill="var(--md-on-surface)"/>
-              <rect x="46" y="108" width="83" height="9" rx="4" fill="var(--md-on-surface)"/>
-              <rect x="123" y="148" width="36" height="5" rx="2.5" fill="var(--md-outline)"/>
-              <rect x="123" y="164" width="36" height="5" rx="2.5" fill="var(--md-outline)"/>
-              <rect x="156" y="132" width="34" height="30" rx="8" fill="var(--md-tertiary)"/>
-              <rect x="162" y="138" width="22" height="6" rx="3" fill="var(--md-on-tertiary)" opacity="0.35"/>
-            </g>
-          </g>
+          <div class="snapshot-grid">
+            <div class="snap-tile">
+              <span class="snap-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 18h2V9a1 1 0 0 1 1-1h2v10h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 18V8l3 3h3v7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8" cy="19.5" r="1.6" fill="currentColor"/><circle cx="17.5" cy="19.5" r="1.6" fill="currentColor"/></svg>
+              </span>
+              <span>Forklifts</span>
+            </div>
+            <div class="snap-tile">
+              <span class="snap-icon"><span class="material-symbols-outlined">battery_charging_full</span></span>
+              <span>Chargers</span>
+            </div>
+            <div class="snap-tile">
+              <span class="snap-icon"><span class="material-symbols-outlined">cleaning_services</span></span>
+              <span>Scrubbers</span>
+            </div>
+            <div class="snap-tile">
+              <span class="snap-icon"><span class="material-symbols-outlined">memory</span></span>
+              <span>Electronics</span>
+            </div>
+            <div class="snap-tile">
+              <span class="snap-icon"><span class="material-symbols-outlined">fingerprint</span></span>
+              <span>Security</span>
+            </div>
+            <div class="snap-tile">
+              <span class="snap-icon"><span class="material-symbols-outlined">electrical_services</span></span>
+              <span>Electrical</span>
+            </div>
+          </div>
 
-          <!-- control panel -->
-          <rect x="228" y="66" width="64" height="96" rx="18" fill="var(--md-surface-container)" stroke="var(--md-outline-variant)" stroke-width="1.5"/>
-          <rect x="239" y="79" width="42" height="12" rx="6" fill="var(--md-primary)"/>
-          <rect x="239" y="98" width="42" height="7" rx="3.5" fill="var(--md-outline-variant)"/>
-          <rect x="239" y="111" width="42" height="7" rx="3.5" fill="var(--md-outline-variant)"/>
-          <rect x="239" y="124" width="42" height="7" rx="3.5" fill="var(--md-outline-variant)"/>
-          <circle class="anim-blink-1" cx="248" cy="146" r="4.5" fill="var(--md-tertiary)"/>
-          <circle class="anim-blink-2" cx="262" cy="146" r="4.5" fill="var(--md-primary)"/>
-          <circle class="anim-blink-3" cx="276" cy="146" r="4.5" fill="var(--md-secondary)"/>
-        </svg>
+          <div class="snapshot-foot">
+            <span class="material-symbols-outlined" style="font-size:16px;">place</span>
+            Kasavu, Nausori &middot; on call across the corridor
+          </div>
+        </div>
       </div>
     </div>
   </section>
